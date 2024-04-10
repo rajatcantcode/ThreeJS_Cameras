@@ -1,5 +1,5 @@
 import * as THREE from "three";
-
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
 
@@ -27,7 +27,7 @@ window.addEventListener("mousemove", (e) => {
   // 2nd way (coordinates value is 0.5 in all direction )
   //   mouse.x = e.clientX / innerWidth - 0.5;
   //   mouse.y = -(e.clientY / innerHeight - 0.5);
-  console.log(mouse.x, mouse.y);
+  //   console.log(mouse.x, mouse.y);
 });
 
 /**
@@ -107,16 +107,50 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height);
 renderer.render(scene, camera);
 const clock = new THREE.Clock();
+
+/**
+ * Orbit Controls
+//1st arg -> camera we want to use
+//2nd arg -> select our render's dom element
+ */
+const controls = new OrbitControls(camera, canvas);
+
+// controls.target.y = 2; // control's target that is a Vector3
+// controls.target.x = 2;
+// controls.target.z = 2;
+
+//damping provide smoothness and friction to the camera
+controls.enableDamping = true;
+
+controls.update();
+
 //Animate
 function animate() {
-  const elapsedTime = clock.getElapsedTime();
-  //   mesh.rotation.y = elapsedTime;
+  //   const elapsedTime = clock.getElapsedTime();
+  // mesh.rotation.y = elapsedTime;
 
-  camera.position.x = mouse.x * 2;
-  camera.position.y = mouse.y * 2;
+  // Rotation in a fixed place around the cube
+  // camera.position.x = mouse.x * 2;
+  // camera.position.y = mouse.y * 2;
+  // camera.lookAt(mesh.position);
+
+  // //Rotation in all 360 degrees around the cube
+  // camera.position.x = Math.sin(mouse.x * Math.PI * 2) * 3;
+  // //   console.log(Math.sin(mouse.x) + "x");
+  // camera.position.z = Math.cos(mouse.x * Math.PI * 2) * 3;
+  // //   console.log(Math.cos(mouse.x) + "z);
+  // camera.position.y = mouse.y * Math.PI * 2 * 3;
+  // //   console.log(mouse.y * Math.PI * 2);
+
+  //Three js has built in controls so that we could produce the same type of result like above or even more
+  // There are 9 controls but we are going to need only one - Orbit Controls
+  //For damping or target position is needed to update
+  controls.update();
+
   camera.lookAt(mesh.position);
 
   renderer.render(scene, camera);
+
   requestAnimationFrame(animate);
 }
 
