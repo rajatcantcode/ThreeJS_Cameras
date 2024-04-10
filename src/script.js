@@ -7,20 +7,39 @@ const canvas = document.querySelector("canvas.webgl");
 const scene = new THREE.Scene();
 
 /**
- * Object
- */
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-const mesh = new THREE.Mesh(geometry, material);
-scene.add(mesh);
-
-/**
  * Sizes
  */
 const sizes = {
   width: 800,
   height: 600,
 };
+
+//mouse coordinates
+
+let mouse = {
+  x: undefined,
+  y: undefined,
+};
+window.addEventListener("mousemove", (e) => {
+  // 1st way (My Recommendation coordinates value is 1 in all direction)
+  mouse.x = (e.clientX / innerWidth) * 2 - 1;
+  mouse.y = -(e.clientY / innerHeight) * 2 + 1;
+  // 2nd way (coordinates value is 0.5 in all direction )
+  //   mouse.x = e.clientX / innerWidth - 0.5;
+  //   mouse.y = -(e.clientY / innerHeight - 0.5);
+  console.log(mouse.x, mouse.y);
+});
+
+/**
+ * Object
+ */
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+const material = new THREE.MeshBasicMaterial({
+  color: 0xff0000,
+  wireframe: true,
+});
+const mesh = new THREE.Mesh(geometry, material);
+scene.add(mesh);
 
 /**
  * Cameras
@@ -69,8 +88,7 @@ const sizes = {
 // camera.lookAt(mesh.position);
 // scene.add(camera);
 
-
-// x - > Custom Controls
+// x - > Custom Controls - Orbit Controls
 const camera = new THREE.PerspectiveCamera(
   100,
   sizes.width / sizes.height,
@@ -79,7 +97,6 @@ const camera = new THREE.PerspectiveCamera(
 );
 camera.position.z = 3;
 scene.add(camera);
-
 
 /**
  * Renderer
@@ -93,7 +110,11 @@ const clock = new THREE.Clock();
 //Animate
 function animate() {
   const elapsedTime = clock.getElapsedTime();
-  mesh.rotation.y = elapsedTime;
+  //   mesh.rotation.y = elapsedTime;
+
+  camera.position.x = mouse.x * 2;
+  camera.position.y = mouse.y * 2;
+  camera.lookAt(mesh.position);
 
   renderer.render(scene, camera);
   requestAnimationFrame(animate);
